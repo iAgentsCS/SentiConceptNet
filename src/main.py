@@ -33,6 +33,12 @@ def main():
     parser_ir.add_argument('--pred', dest='pred_path', required=True)
     parser_ir.add_argument('--param')
 
+    parser_ev = subparsers.add_parser('eval')
+    parser_ev.set_defaults(handler=handle_eval)
+    parser_ev.add_argument('metric', choices=('polarity', 'kendall'))
+    parser_ev.add_argument('--pred', dest='pred_path', required=True)
+    parser_ev.add_argument('--truth', dest='truth_path', required=True)
+
     args = vars(parser.parse_args())
     handler = args.pop('handler')
     handler(**args)

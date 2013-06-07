@@ -14,11 +14,13 @@ from dataset import (
     filters
 )
 from iterreg import iterreg
+from eval import polarity_accuracy, kendall_tau
 
 __all__ = (
     'handle_split',
     'handle_seed',
-    'handle_iterreg'
+    'handle_iterreg',
+    'handle_eval'
 )
 
 
@@ -88,3 +90,16 @@ def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None, par
 
     pred = iterreg(anew, sn, edges, pis, param=param)
     _save(pred_path, pred)
+
+
+def handle_eval(metric, pred_path, truth_path):
+    preds = [p if p is not None else 0.0 for p in _load(pred_path, atof)]
+    split = F(flip(str.split), '\t')
+    with open(truth_path, 'r') as fin:
+        truths = tuple((int(i), int(j)) for i, j in imap(split, fin))
+
+    result = {
+        'polarity': polarity_accuracy,
+        'kendall': kendall_tau
+    }[metric](preds, truths)
+    print result

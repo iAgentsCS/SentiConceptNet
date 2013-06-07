@@ -24,6 +24,15 @@ def main():
     parser_sd.add_argument('--seed', dest='seed_path', required=True)
     parser_sd.add_argument('--nodes', dest='nodes_path', required=True)
 
+    parser_ir = subparsers.add_parser('iterreg')
+    parser_ir.set_defaults(handler=handle_iterreg)
+    parser_ir.add_argument('--anew', dest='anew_path', required=True)
+    parser_ir.add_argument('--sn', dest='sn_path', required=True)
+    parser_ir.add_argument('--edges', dest='edges_path', required=True)
+    parser_ir.add_argument('--pis', dest='pis_path')
+    parser_ir.add_argument('--pred', dest='pred_path', required=True)
+    parser_ir.add_argument('--param')
+
     args = vars(parser.parse_args())
     handler = args.pop('handler')
     handler(**args)

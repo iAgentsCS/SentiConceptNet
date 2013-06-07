@@ -49,10 +49,6 @@ def _count(edges, counter=None):
     return reduce(_accumulate, edges, counter)
 
 
-def _atof(text):
-    return float(text) if text != 'None' else None
-
-
 def iter_parse(path):
     with open(path, 'r') as fin:
         rdr = DictReader(fin, delimiter='\t')

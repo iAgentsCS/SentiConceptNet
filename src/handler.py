@@ -4,17 +4,21 @@
 from itertools import imap
 
 from fn import F
+from fn.op import flip
 
 from dataset import (
+    atof,
     anew,
     senticnet as sn,
     conceptnet as cn,
     filters
 )
+from iterreg import iterreg
 
 __all__ = (
     'handle_split',
     'handle_seed',
+    'handle_iterreg'
 )
 
 
@@ -27,6 +31,11 @@ def _save(path, lines):
 def _load(path, f=None):
     with open(path, 'r') as fin:
         return map(f, imap(str.rstrip, fin))
+
+
+def _load_edges(path):
+    wrap = F(flip(str.split), '\t') >> (lambda xs: cn.wrap_edge(*xs))
+    return _load(path, wrap)
 
 
 def handle_split(graph_paths, nodes_path=None, edges_path=None, rels_path=None):
@@ -66,3 +75,16 @@ def handle_seed(seed_type, raw_path, seed_path, nodes_path):
     nodes = _load(nodes_path)
     seeds = imap(load(raw_path).get, nodes)
     _save(seed_path, seeds)
+
+
+def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None, param=None):
+    anew = _load(anew_path, atof)
+    sn = _load(sn_path, atof)
+    edges = _load_edges(edges_path)
+
+    pis = None
+    if pis_path is not None:
+        pis = _load(pis_path, atof)
+
+    pred = iterreg(anew, sn, edges, pis, param=param)
+    _save(pred_path, pred)

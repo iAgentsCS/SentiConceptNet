@@ -33,6 +33,14 @@ def main():
     parser_ir.add_argument('--pred', dest='pred_path', required=True)
     parser_ir.add_argument('--param')
 
+    parser_rw = subparsers.add_parser('randwalk')
+    parser_rw.set_defaults(handler=handle_randwalk)
+    parser_rw.add_argument('--edges', dest='edges_path', required=True)
+    parser_rw.add_argument('--seed', dest='seed_path', required=True)
+    parser_rw.add_argument('--pred', dest='pred_path', required=True)
+    parser_rw.add_argument('--alpha', default=0.5, type=float)
+    parser_rw.add_argument('--axis', default=1, type=int)
+
     parser_ev = subparsers.add_parser('eval')
     parser_ev.set_defaults(handler=handle_eval)
     parser_ev.add_argument('metric', choices=('polarity', 'kendall'))

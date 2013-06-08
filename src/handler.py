@@ -14,12 +14,14 @@ from dataset import (
     filters
 )
 from iterreg import iterreg
+from randwalk import load_graph, random_walk
 from eval import polarity_accuracy, kendall_tau
 
 __all__ = (
     'handle_split',
     'handle_seed',
     'handle_iterreg',
+    'handle_randwalk',
     'handle_eval'
 )
 
@@ -89,6 +91,14 @@ def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None, par
         pis = _load(pis_path, atof)
 
     pred = iterreg(anew, sn, edges, pis, param=param)
+    _save(pred_path, pred)
+
+
+def handle_randwalk(edges_path, seed_path, pred_path, alpha, axis):
+    seeds = [p if p is not None else 0.0 for p in _load(seed_path, atof)]
+
+    graph = load_graph(edges_path)
+    pred = random_walk(graph, seeds, alpha, axis)
     _save(pred_path, pred)
 
 

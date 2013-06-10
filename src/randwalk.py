@@ -44,19 +44,24 @@ def load_graph(path, f=None):
 
 
 def _alignig_zero(values, seeds):
-    zero = values[810]
+    for idx, value in enumerate(seeds):
+        if value == 0.0:
+            zero_idx = idx
+            break
+
+    zero = values[zero_idx]
     return [x - zero for x in values]
 
 
 def _unifying_dist(values, seeds):
-    n = 919
+    idx_list = [idx for idx in xrange(len(seeds)) if seeds[idx] is not None]
+    n = len(idx_list)
 
-    muX = sum(seeds) / n
-    varX = norm([(x - muX) for x in seeds])
+    muX = sum(seeds[idx] for idx in idx_list) / n
+    varX = norm([(seeds[idx] - muX) for idx in idx_list])
 
-    sentiments = values[:n]
-    muY = sum(sentiments) / n
-    varY = norm([(y - muY) for y in sentiments])
+    muY = sum(values[idx] for idx in idx_list) / n
+    varY = norm([(values[idx] - muY) for idx in idx_list])
 
     p = sqrt(varX / varY)
     diff = muY * p - muX

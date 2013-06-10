@@ -15,6 +15,7 @@ from dataset import (
 )
 from iterreg import iterreg
 from randwalk import load_graph, random_walk
+from shift import alignig_zero, unifying_dist
 from eval import polarity_accuracy, kendall_tau
 
 __all__ = (
@@ -22,6 +23,7 @@ __all__ = (
     'handle_seed',
     'handle_iterreg',
     'handle_randwalk',
+    'handle_shift',
     'handle_eval'
 )
 
@@ -100,6 +102,18 @@ def handle_randwalk(edges_path, seed_path, pred_path, alpha, axis):
     graph = load_graph(edges_path)
     pred = random_walk(graph, seeds, alpha, axis)
     _save(pred_path, pred)
+
+
+def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
+    pred_in = _load(pred_in_path, atof)
+    seeds = _load(seed_path, atof)
+    shift = {
+        'zero': alignig_zero,
+        'dist': unifying_dist
+    }[strategy]
+
+    pred_out = shift(pred_in, seeds)
+    _save(pred_out_path, pred_out)
 
 
 def handle_eval(metric, pred_path, truth_path):

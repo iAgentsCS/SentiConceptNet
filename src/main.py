@@ -41,6 +41,13 @@ def main():
     parser_rw.add_argument('--alpha', default=0.5, type=float)
     parser_rw.add_argument('--axis', default=1, type=int)
 
+    parser_sh = subparsers.add_parser('shift')
+    parser_sh.set_defaults(handler=handle_shift)
+    parser_sh.add_argument('strategy', choices=('zero', 'dist'))
+    parser_sh.add_argument('--seed', dest='seed_path', required=True)
+    parser_sh.add_argument('--pred_in', dest='pred_in_path', required=True)
+    parser_sh.add_argument('--pred_out', dest='pred_out_path', required=True)
+
     parser_ev = subparsers.add_parser('eval')
     parser_ev.set_defaults(handler=handle_eval)
     parser_ev.add_argument('metric', choices=('polarity', 'kendall'))

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from itertools import ifilter, imap
-from math import sqrt
 
 from numpy import loadtxt, copy
 from numpy.linalg import norm
@@ -41,33 +40,6 @@ def load_graph(path, f=None):
         graph.append(m)
 
     return graph
-
-
-def _alignig_zero(values, seeds):
-    for idx, value in enumerate(seeds):
-        if value == 0.0:
-            zero_idx = idx
-            break
-
-    zero = values[zero_idx]
-    return [x - zero for x in values]
-
-
-def _unifying_dist(values, seeds):
-    idx_list = [idx for idx in xrange(len(seeds)) if seeds[idx] is not None]
-    n = len(idx_list)
-
-    muX = sum(seeds[idx] for idx in idx_list) / n
-    varX = norm([(seeds[idx] - muX) for idx in idx_list])
-
-    muY = sum(values[idx] for idx in idx_list) / n
-    varY = norm([(values[idx] - muY) for idx in idx_list])
-
-    p = sqrt(varX / varY)
-    diff = muY * p - muX
-
-    print diff
-    return [y * p - diff for y in values]
 
 
 def random_walk(graph, values, alpha, axis):

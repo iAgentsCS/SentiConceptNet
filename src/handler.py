@@ -117,7 +117,7 @@ def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
 
 
 def handle_eval(metric, pred_path, truth_path):
-    preds = [p if p is not None else 0.0 for p in _load(pred_path, atof)]
+    preds = _load(pred_path, atof)
     split = F(flip(str.split), '\t')
     with open(truth_path, 'r') as fin:
         truths = tuple((int(i), int(j)) for i, j in imap(split, fin))

@@ -6,13 +6,12 @@ from itertools import imap
 from fn import F
 from fn.op import flip
 
-from dataset import (
-    atof,
-    anew,
-    senticnet as sn,
-    conceptnet as cn,
-    filters
-)
+import dataset.anew as anew
+import dataset.senticnet as sn
+import dataset.conceptnet as cn
+import dataset.filters as filters
+
+from dataset import atof
 from iterreg import iterreg
 from randwalk import load_graph, random_walk
 from shift import alignig_zero, unifying_dist

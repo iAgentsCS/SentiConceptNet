@@ -15,7 +15,7 @@ def alignig_zero(values, seeds):
             break
 
     zero = values[zero_idx]
-    return [x - zero for x in values]
+    return [x - zero if x is not None else None for x in values]
 
 
 def unifying_dist(values, seeds):
@@ -32,4 +32,4 @@ def unifying_dist(values, seeds):
     diff = muY * p - muX
 
     print diff
-    return [y * p - diff for y in values]
+    return [y * p - diff if y is not None else None for y in values]

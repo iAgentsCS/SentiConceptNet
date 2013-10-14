@@ -5,10 +5,10 @@ from math import sqrt
 
 from numpy.linalg import norm
 
-__all__ = ('alignig_zero', 'unifying_dist')
+__all__ = ('align_zero', 'align_mean_var')
 
 
-def alignig_zero(values, seeds):
+def align_zero(values, seeds):
     for idx, value in enumerate(seeds):
         if value == 0.0:
             zero_idx = idx
@@ -18,7 +18,7 @@ def alignig_zero(values, seeds):
     return [x - zero if x is not None else None for x in values]
 
 
-def unifying_dist(values, seeds):
+def align_mean_var(values, seeds):
     idx_list = [idx for idx in xrange(len(seeds)) if seeds[idx] is not None]
     n = len(idx_list)
 

@@ -14,7 +14,7 @@ import dataset.filters as filters
 from dataset import atof
 from iterreg import iterreg
 from randwalk import load_graph, random_walk
-from shift import alignig_zero, unifying_dist
+from shift import align_zero, align_mean_var
 from eval import polarity_accuracy, kendall_tau
 
 __all__ = (
@@ -107,8 +107,8 @@ def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
     pred_in = _load(pred_in_path, atof)
     seeds = _load(seed_path, atof)
     shift = {
-        'zero': alignig_zero,
-        'dist': unifying_dist
+        'za': align_zero,
+        'mva': align_mean_var
     }[strategy]
 
     pred_out = shift(pred_in, seeds)

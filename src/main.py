@@ -43,7 +43,7 @@ def main():
 
     parser_sh = subparsers.add_parser('shift')
     parser_sh.set_defaults(handler=handle_shift)
-    parser_sh.add_argument('strategy', choices=('zero', 'dist'))
+    parser_sh.add_argument('strategy', choices=('za', 'mva'))
     parser_sh.add_argument('--seed', dest='seed_path', required=True)
     parser_sh.add_argument('--pred_in', dest='pred_in_path', required=True)
     parser_sh.add_argument('--pred_out', dest='pred_out_path', required=True)

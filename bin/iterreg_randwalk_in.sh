@@ -7,7 +7,7 @@ for i in {1..9};
 do
     python $src/main.py randwalk \
         --edges $data/graph/edges.tsv \
-        --seed  $data/iterreg/r8.txt \
+        --seed  $data/iterreg/r3.txt \
         --pred  $data/iterreg_randwalk_in/r$i.txt \
         --alpha 0.$i \
         --axis 1

@@ -54,6 +54,15 @@ def main():
     parser_ev.add_argument('--pred', dest='pred_path', required=True)
     parser_ev.add_argument('--truth', dest='truth_path', required=True)
 
+    parser_lk = subparsers.add_parser('lookup')
+    parser_lk.set_defaults(handler=handle_lookup)
+    parser_lk.add_argument('--nodes', dest='nodes_path', required=True)
+    parser_lk.add_argument('--anew', dest='anew_path', required=True)
+    parser_lk.add_argument('--sn', dest='sn_path', required=True)
+    parser_lk.add_argument('--pred', dest='pred_path', required=True)
+    parser_lk.add_argument('--rels', dest='rels_path', required=True)
+    parser_lk.add_argument('--edges', dest='edges_path', required=True)
+
     args = vars(parser.parse_args())
     handler = args.pop('handler')
     handler(**args)

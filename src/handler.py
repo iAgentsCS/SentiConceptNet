@@ -16,6 +16,7 @@ from iterreg import iterreg
 from randwalk import load_graph, random_walk
 from shift import align_zero, align_mean_var
 from eval import polarity_accuracy, kendall_tau
+from lookup import lookup
 
 __all__ = (
     'handle_split',
@@ -23,7 +24,8 @@ __all__ = (
     'handle_iterreg',
     'handle_randwalk',
     'handle_shift',
-    'handle_eval'
+    'handle_eval',
+    'handle_lookup'
 )
 
 
@@ -126,3 +128,13 @@ def handle_eval(metric, pred_path, truth_path):
         'kendall': kendall_tau
     }[metric](preds, truths)
     print result
+
+
+def handle_lookup(nodes_path, anew_path, sn_path, pred_path, rels_path, edges_path):
+    nodes = _load(nodes_path)
+    anew = _load(anew_path, atof)
+    sn = _load(sn_path, atof)
+    pred = _load(pred_path, atof)
+    rels = _load(rels_path)
+    edges = _load_edges(edges_path)
+    lookup(nodes, anew, sn, pred, rels, edges)

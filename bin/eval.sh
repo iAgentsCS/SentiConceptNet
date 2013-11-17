@@ -49,9 +49,9 @@ echo --- SenticNet ---
 echo \
     Polarity Accuracy = \
     `python src/main.py eval polarity \
-        --pred $data/graph/sn.tsv \
+        --pred $data/seed/sn.tsv \
         --truth $data/truth/1.txt`, \
     Kendall-Tau = \
     `python $src/main.py eval kendall \
-        --pred $data/graph/sn.tsv \
+        --pred $data/seed/sn.tsv \
         --truth $data/truth/pairs1.txt`

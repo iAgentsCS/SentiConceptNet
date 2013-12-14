@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from itertools import izip
-
 from .libsvm.svm import svm_problem, svm_parameter
 from .libsvm.svmutil import svm_train, svm_predict
 
@@ -42,6 +40,8 @@ def iterreg(anew, sn, edges, pis=None, iterations=1, param=None):
         m = _learn(x, y, param)
         pis = _predict(m, encoded_features)
 
-        pis = [s if len(f) else None for s, f in izip(pis, encoded_features)]
+        for index, feature in enumerate(encoded_features):
+            if not len(feature):
+                pis[index] = None
 
     return pis

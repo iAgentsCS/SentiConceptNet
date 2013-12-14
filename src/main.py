@@ -38,6 +38,8 @@ def main():
     parser_rw.add_argument('--edges', dest='edges_path', required=True)
     parser_rw.add_argument('--seed', dest='seed_path', required=True)
     parser_rw.add_argument('--pred', dest='pred_path', required=True)
+    parser_rw.add_argument('--cin', dest='certainty_in_path', required=True)
+    parser_rw.add_argument('--cout', dest='certainty_out_path', required=True)
     parser_rw.add_argument('--alpha', default=0.5, type=float)
     parser_rw.add_argument('--axis', default=1, type=int)
 

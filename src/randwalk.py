@@ -30,6 +30,9 @@ def load_graph(path, f=None):
         indices['end'].append(row['end'])
         #indices['weight'].append(row['weight'])
         indices['weight'].append(1.0)
+        indices['start'].append(row['end'])
+        indices['end'].append(row['start'])
+        indices['weight'].append(1.0)
         N = max(N, row['start'], row['end'])
 
     N += 1
@@ -41,17 +44,21 @@ def load_graph(path, f=None):
     return graph
 
 
-def random_walk(graph, values, alpha, axis):
+def random_walk(graph, values, confidences, alpha, axis):
     graph = sum(imap(coo_matrix.tocsr, graph))
     graph = _normalize(graph, axis)
     init = copy(values)
+    initC = copy(confidences)
 
     diff = float('infinity')
     while diff > 0.001:
         prev = copy(values)
         values = (1 - alpha) * graph * values + alpha * init
+        confidences = (1 - alpha) * graph * confidences + alpha * initC
 
         diff = norm(values - prev)
         print 'diff = ' + str(diff)
 
-    return values
+    n = len(values)
+    values = [values[i] if confidences[i] > 0.0 else None for i in xrange(n)]
+    return values, confidences

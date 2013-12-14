@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from itertools import imap
+from random import uniform
 
 from fn import F
 from fn.op import flip
@@ -96,12 +97,16 @@ def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None, par
     _save(pred_path, pred)
 
 
-def handle_randwalk(edges_path, seed_path, pred_path, alpha, axis):
-    seeds = [p if p is not None else 0.0 for p in _load(seed_path, atof)]
+def handle_randwalk(edges_path, seed_path, certainty_in_path,
+                    pred_path, certainty_out_path, alpha, axis):
+    values = _load(seed_path, atof)
+    seeds = [p if p is not None else 0.0 for p in values]
+    confidences = _load(certainty_in_path, float)
 
     graph = load_graph(edges_path)
-    pred = random_walk(graph, seeds, alpha, axis)
+    pred, confidences = random_walk(graph, seeds, confidences, alpha, axis)
     _save(pred_path, pred)
+    _save(certainty_out_path, confidences)
 
 
 def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):

@@ -9,6 +9,8 @@ do
         --edges $data/graph/edges.tsv \
         --seed  $data/seeds/anew.tsv \
         --pred  $data/randwalk_out/r$i.txt \
+        --cin   $data/certainty/anew.txt \
+        --cout  $data/certainty/randwalk_out_$i.txt \
         --alpha 0.$i \
         --axis 0
 done

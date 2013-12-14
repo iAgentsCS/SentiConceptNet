@@ -9,6 +9,8 @@ do
         --edges $data/graph/edges.tsv \
         --seed  $data/iterreg/r3.txt \
         --pred  $data/iterreg_randwalk_in/r$i.txt \
+        --cin   $data/certainty/iterreg.txt \
+        --cout  $data/certainty/iterreg_randwalk_in_$i.txt \
         --alpha 0.$i \
         --axis 1
 done

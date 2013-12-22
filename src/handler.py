@@ -73,11 +73,11 @@ def handle_split(graph_paths, nodes_path=None, edges_path=None, rels_path=None):
         _save(edges_path, lines)
 
 
-def handle_seed(type, raw_path, seed_path, nodes_path):
+def handle_seed(source, raw_path, seed_path, nodes_path):
     load = {
         'anew': anew.load,
         'sn': sn.load
-    }[type]
+    }[source]
 
     nodes = _load(nodes_path)
     seeds = imap(load(raw_path).get, nodes)

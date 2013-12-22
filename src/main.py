@@ -19,7 +19,7 @@ def main():
 
     parser_sd = subparsers.add_parser('seed')
     parser_sd.set_defaults(handler=handle_seed)
-    parser_sd.add_argument('type', choices=('anew', 'sn'))
+    parser_sd.add_argument('source', choices=('anew', 'sn'))
     parser_sd.add_argument('--raw', dest='raw_path', required=True)
     parser_sd.add_argument('--seed', dest='seed_path', required=True)
     parser_sd.add_argument('--nodes', dest='nodes_path', required=True)

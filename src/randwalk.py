@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from itertools import ifilter, imap
+from itertools import ifilter, imap, izip
 
 from numpy import loadtxt, copy
 from numpy.linalg import norm
@@ -14,7 +14,7 @@ def _normalize(graph, axis):
     return normalize(graph + graph.T, norm='l1', axis=axis, copy=False)
 
 
-def load_graph(path, f=None):
+def load_graph(path, axis, f=None):
     dtype = {
         'formats': ('i', 'i', 'i', 'f8'),
         'names': ('rel', 'start', 'end', 'weight')}
@@ -26,39 +26,41 @@ def load_graph(path, f=None):
     indices_list = [{'start': [], 'end': [], 'weight': []} for _ in xrange(R)]
     for row in ifilter(f, data):
         indices = indices_list[row['rel']]
+
         indices['start'].append(row['start'])
         indices['end'].append(row['end'])
-        #indices['weight'].append(row['weight'])
         indices['weight'].append(1.0)
+
         indices['start'].append(row['end'])
         indices['end'].append(row['start'])
         indices['weight'].append(1.0)
+
         N = max(N, row['start'], row['end'])
 
     N += 1
     graph = []
     for indices in indices_list:
-        m = coo_matrix((indices['weight'], (indices['start'], indices['end'])), shape=(N, N))
+        m = coo_matrix((indices['weight'],
+                       (indices['start'], indices['end'])),
+                       shape=(N, N))
         graph.append(m)
 
-    return graph
-
-
-def random_walk(graph, values, confidences, alpha, axis):
     graph = sum(imap(coo_matrix.tocsr, graph))
-    graph = _normalize(graph, axis)
+    return _normalize(graph, axis)
+
+
+def random_walk(graph, values, certs, alpha):
     init = copy(values)
-    initC = copy(confidences)
+    cert_init = copy(certs)
 
     diff = float('infinity')
     while diff > 0.001:
         prev = copy(values)
         values = (1 - alpha) * graph * values + alpha * init
-        confidences = (1 - alpha) * graph * confidences + alpha * initC
+        certs = (1 - alpha) * graph * certs + alpha * cert_init
 
         diff = norm(values - prev)
         print 'diff = ' + str(diff)
 
-    n = len(values)
-    values = [values[i] if confidences[i] > 0.0 else None for i in xrange(n)]
-    return values, confidences
+    values = [v if c > 0.0 else None for v, c in izip(values, certs)]
+    return values, certs

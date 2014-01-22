@@ -6,6 +6,8 @@ from random import uniform
 from fn import F
 from fn.op import flip
 
+from numpy import var
+
 import dataset.anew as anew
 import dataset.senticnet as sn
 import dataset.conceptnet as cn
@@ -20,8 +22,9 @@ from lookup import lookup
 
 __all__ = (
     'handle_split',
-    'handle_seed',
+    'handle_seeds',
     'handle_iterreg',
+    'handle_ircert',
     'handle_randwalk',
     'handle_shift',
     'handle_eval',
@@ -45,7 +48,7 @@ def _load_edges(path):
     return _load(path, wrap)
 
 
-def handle_split(graph_paths, nodes_path=None, edges_path=None, rels_path=None):
+def handle_split(graph_paths, nodes_path, edges_path, rels_path):
     get_edges = F(cn.iter_edges,
                   normalize=filters.normalize_assertion,
                   prefilter=filters.prefilter_assertion,
@@ -61,19 +64,15 @@ def handle_split(graph_paths, nodes_path=None, edges_path=None, rels_path=None):
     nodes = get_nodes(edges)
     rels = get_rels(edges)
 
-    if nodes_path is not None:
-        _save(nodes_path, nodes)
-
-    if rels_path is not None:
-        _save(rels_path, rels)
+    _save(nodes_path, nodes)
+    _save(rels_path, rels)
 
     edges = sorted(cn.simplify_edges(edges, nodes, rels))
-    if edges_path is not None:
-        lines = imap('\t'.join, (imap(str, edge) for edge in edges))
-        _save(edges_path, lines)
+    lines = imap('\t'.join, (imap(str, edge) for edge in edges))
+    _save(edges_path, lines)
 
 
-def handle_seed(source, raw_path, seed_path, nodes_path):
+def handle_seeds(source, raw_path, seed_path, nodes_path):
     load = {
         'anew': anew.load,
         'sn': sn.load
@@ -84,7 +83,8 @@ def handle_seed(source, raw_path, seed_path, nodes_path):
     _save(seed_path, seeds)
 
 
-def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None, param=None):
+def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None,
+                   param=None):
     anew = _load(anew_path, atof)
     sn = _load(sn_path, atof)
     edges = _load_edges(edges_path)
@@ -93,20 +93,36 @@ def handle_iterreg(anew_path, sn_path, edges_path, pred_path, pis_path=None, par
     if pis_path is not None:
         pis = _load(pis_path, atof)
 
-    pred = iterreg(anew, sn, edges, pis, param=param)
+    pred = iterreg(anew, sn, edges, pis, param)
     _save(pred_path, pred)
 
 
-def handle_randwalk(edges_path, seed_path, certainty_in_path,
-                    pred_path, certainty_out_path, alpha, axis):
+def handle_ircert(pred_paths, cert_path):
+    val_list = []
+    for path in pred_paths:
+        preds = _load(path, atof)
+        preds = [v if v is not None else uniform(-1, 1) for v in preds]
+        val_list.append(preds)
+
+    preds = _load(pred_paths[-1], atof)
+    var_list = var(val_list, 0)
+
+    certs = [1 / v if preds[i] is not None else 0.0
+             for i, v in enumerate(var_list)]
+
+    _save(cert_path, certs)
+
+
+def handle_randwalk(edges_path, seed_path, pred_path, alpha, axis,
+                    cert_in_path, cert_out_path):
     values = _load(seed_path, atof)
     seeds = [p if p is not None else 0.0 for p in values]
-    confidences = _load(certainty_in_path, float)
+    certs = _load(cert_in_path, float)
 
-    graph = load_graph(edges_path)
-    pred, confidences = random_walk(graph, seeds, confidences, alpha, axis)
+    graph = load_graph(edges_path, axis)
+    pred, certs = random_walk(graph, seeds, certs, alpha)
     _save(pred_path, pred)
-    _save(certainty_out_path, confidences)
+    _save(cert_out_path, certs)
 
 
 def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
@@ -117,6 +133,7 @@ def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
         'mva': align_mean_var
     }[strategy]
 
+    pred_in = [v if v != 0.0 else None for v in pred_in]
     pred_out = shift(pred_in, seeds)
     _save(pred_out_path, pred_out)
 
@@ -134,7 +151,8 @@ def handle_eval(metric, pred_path, truth_path):
     print result
 
 
-def handle_lookup(nodes_path, anew_path, sn_path, pred_path, rels_path, edges_path):
+def handle_lookup(nodes_path, anew_path, sn_path, pred_path,
+                  rels_path, edges_path):
     nodes = _load(nodes_path)
     anew = _load(anew_path, atof)
     sn = _load(sn_path, atof)

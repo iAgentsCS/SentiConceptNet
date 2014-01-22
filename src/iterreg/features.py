@@ -112,13 +112,24 @@ def encode_features(features):
             weight = neighbor.weight
 
             if neighbor.anew is not None:
-                index = 0 * 2 * 12 * 33 + neighbor.direction * 12 * 33 + neighbor.relation * 12 + neighbor.anew
+                index = 0 * 2 * 12 * 33 \
+                    + neighbor.direction * 12 * 33 \
+                    + neighbor.relation * 12 \
+                    + neighbor.anew
                 encoded_feature[index] += weight / weight_sum['anew']
+
             if neighbor.sn is not None:
-                index = 1 * 2 * 12 * 33 + neighbor.direction * 12 * 33 + neighbor.relation * 12 + neighbor.sn
+                index = 1 * 2 * 12 * 33 \
+                    + neighbor.direction * 12 * 33 \
+                    + neighbor.relation * 12 \
+                    + neighbor.sn
                 encoded_feature[index] += weight / weight_sum['sn']
+
             if neighbor.pis is not None:
-                index = 2 * 2 * 12 * 33 + neighbor.direction * 12 * 33 + neighbor.relation * 12 + neighbor.pis
+                index = 2 * 2 * 12 * 33 \
+                    + neighbor.direction * 12 * 33 \
+                    + neighbor.relation * 12 \
+                    + neighbor.pis
                 encoded_feature[index] += weight / weight_sum['pis']
 
         self_features = feature['self']

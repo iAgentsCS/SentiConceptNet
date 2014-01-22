@@ -10,15 +10,12 @@ def prefilter_assertion(assertion):
     start = assertion['start']
     end = assertion['end']
     return prefilter_concept(start) and prefilter_concept(end) \
-        and rel.startswith('/r/') #and (not rel.startswith('/r/Not'))
-        #and rel.startswith('/r/') and start != end
+        and rel.startswith('/r/') and start != end
 
 
 def postfilter_concept(concept):
     #return concept.count > 1 and concept.text
-    #return concept.text.translate(None, '0123456789\'\"{}()[]~`!@#$%^&*_-+=\\|/?.,;:')
-    #return concept.text
-    return True
+    return concept.text
 
 
 def postfilter_assertion(assertion):

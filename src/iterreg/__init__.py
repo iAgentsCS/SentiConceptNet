@@ -28,20 +28,18 @@ def _predict(m, x, y=None):
     return labels
 
 
-def iterreg(anew, sn, edges, pis=None, iterations=1, param=None):
+def iterreg(anew, sn, edges, pis=None, param=None):
     train_ids = tuple(i for i, s in enumerate(anew) if s is not None)
 
     y = tuple(anew[i] for i in train_ids)
-    for it in xrange(0, iterations):
-        features = generate_features(anew, sn, edges, pis)
-        encoded_features = tuple(encode_features(features))
+    features = generate_features(anew, sn, edges, pis)
+    encoded_features = tuple(encode_features(features))
 
-        x = tuple(encoded_features[i] for i in train_ids)
-        m = _learn(x, y, param)
-        pis = _predict(m, encoded_features)
-
-        for index, feature in enumerate(encoded_features):
-            if not len(feature):
-                pis[index] = None
+    x = tuple(encoded_features[i] for i in train_ids)
+    m = _learn(x, y, param)
+    pis = _predict(m, encoded_features)
+    for index, feature in enumerate(encoded_features):
+        if not len(feature):
+            pis[index] = None
 
     return pis

@@ -60,7 +60,7 @@ def random_walk(graph, values, certs, alpha):
         certs = (1 - alpha) * graph * certs + alpha * cert_init
 
         diff = norm(values - prev)
-        print 'diff = ' + str(diff)
+        #print 'diff = ' + str(diff)
 
     values = [v if c > 0.0 else None for v, c in izip(values, certs)]
     return values, certs

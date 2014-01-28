@@ -55,6 +55,13 @@ def main():
     parser_sh.add_argument('--pred_in', dest='pred_in_path', required=True)
     parser_sh.add_argument('--pred_out', dest='pred_out_path', required=True)
 
+    parser_ip = subparsers.add_parser('impact')
+    parser_ip.set_defaults(handler=handle_impact)
+    parser_ip.add_argument('--edges', dest='edges_path', required=True)
+    parser_ip.add_argument('--impact', dest='impact_path', required=True)
+    parser_ip.add_argument('--alpha', default=0.1, type=float)
+    parser_ip.add_argument('--axis', default=1, type=int)
+
     parser_ev = subparsers.add_parser('eval')
     parser_ev.set_defaults(handler=handle_eval)
     parser_ev.add_argument('metric', choices=('polarity', 'kendall'))

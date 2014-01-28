@@ -27,6 +27,7 @@ __all__ = (
     'handle_ircert',
     'handle_randwalk',
     'handle_shift',
+    'handle_impact',
     'handle_eval',
     'handle_lookup'
 )
@@ -136,6 +137,22 @@ def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
     pred_in = [v if v != 0.0 else None for v in pred_in]
     pred_out = shift(pred_in, seeds)
     _save(pred_out_path, pred_out)
+
+
+def handle_impact(edges_path, impact_path, alpha, axis):
+    graph = load_graph(edges_path, axis)
+
+    n = graph.shape[0]
+    certs = [0.0] * n
+    impacts = [0.0] * n
+    for idx in xrange(n):
+        certs[idx] = 1.0
+        _, certs_out = random_walk(graph, certs, certs, alpha)
+        certs[idx] = 0.0
+        impacts[idx] = sum(certs_out)
+        print idx, impacts[idx]
+
+    _save(impact_path, impacts)
 
 
 def handle_eval(metric, pred_path, truth_path):

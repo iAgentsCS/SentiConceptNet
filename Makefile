@@ -36,6 +36,7 @@ RW_PRED_PATH        = $(RW_DATA_PATH)/r1.txt
 
 IR_CERT_PATH        = $(CERT_DATA_PATH)/iterreg.txt
 RW_CERT_PATH        = $(CERT_DATA_PATH)/randwalk.txt
+IMPACT_PATH         = $(CERT_DATA_PATH)/impact.txt
 
 POL_TRUTH_1_PATH    = $(TRUTH_DATA_PATH)/1.txt
 POL_TRUTH_2_PATH    = $(TRUTH_DATA_PATH)/2.txt
@@ -59,6 +60,7 @@ define eval-pred-all
 endef
 
 .PHONY: split seeds seeds-anew seeds-sn iterreg iterreg-certainty randwalk shift \
+	impact \
 	eval eval-sn eval-iterreg eval-randwalk \
 	clean clean-graph clean-seeds clean-iterreg clean-randwalk clean-certainty
 
@@ -135,6 +137,15 @@ shift:
 	    --seed      $(ANEW_PATH) \
 	    --pred_in   $(RW_PRED_PATH) \
 	    --pred_out  $(RW_PRED_PATH)
+
+impact:
+	@echo "Calculating impacts..."
+	@mkdir -p $(RW_DATA_PATH)
+	@$(PY) $(MAIN_SCRIPT_PATH) impact \
+	    --edges     $(EDGES_PATH) \
+	    --impact    $(IMPACT_PATH) \
+	    --alpha     $(RW_ALPHA) \
+	    --axis      $(RW_AXIS)
 
 eval: eval-iterreg eval-randwalk
 

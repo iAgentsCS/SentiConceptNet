@@ -61,7 +61,7 @@ endef
 
 .PHONY: split seeds seeds-anew seeds-sn iterreg iterreg-certainty randwalk shift \
 	impact \
-	eval eval-sn eval-iterreg eval-randwalk \
+	lookup eval eval-sn eval-iterreg eval-randwalk \
 	clean clean-graph clean-seeds clean-iterreg clean-randwalk clean-certainty
 
 all: split seeds iterreg iterreg-certainty randwalk shift
@@ -146,6 +146,15 @@ impact:
 	    --impact    $(IMPACT_PATH) \
 	    --alpha     $(RW_ALPHA) \
 	    --axis      $(RW_AXIS)
+
+lookup:
+	@$(PY) $(MAIN_SCRIPT_PATH) lookup \
+	    --nodes     $(NODES_PATH) \
+	    --edges     $(EDGES_PATH) \
+	    --rels      $(RELS_PATH) \
+	    --anew      $(ANEW_PATH) \
+	    --sn        $(SN_PATH) \
+	    --pred      $(RW_PRED_PATH)
 
 eval: eval-iterreg eval-randwalk
 

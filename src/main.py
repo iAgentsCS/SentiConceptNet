@@ -62,6 +62,15 @@ def main():
     parser_ip.add_argument('--alpha', default=0.1, type=float)
     parser_ip.add_argument('--axis', default=1, type=int)
 
+    parser_lk = subparsers.add_parser('lookup')
+    parser_lk.set_defaults(handler=handle_lookup)
+    parser_lk.add_argument('--nodes', dest='nodes_path', required=True)
+    parser_lk.add_argument('--edges', dest='edges_path', required=True)
+    parser_lk.add_argument('--rels', dest='rels_path', required=True)
+    parser_lk.add_argument('--anew', dest='anew_path', required=True)
+    parser_lk.add_argument('--sn', dest='sn_path', required=True)
+    parser_lk.add_argument('--pred', dest='pred_path', required=True)
+
     parser_ev = subparsers.add_parser('eval')
     parser_ev.set_defaults(handler=handle_eval)
     parser_ev.add_argument('metric', choices=('polarity', 'kendall'))

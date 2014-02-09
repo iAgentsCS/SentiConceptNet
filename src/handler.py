@@ -17,6 +17,7 @@ from dataset import atof
 from iterreg import iterreg
 from randwalk import load_graph, random_walk
 from shift import align_zero, align_mean_var
+from active import calc_impacts
 from eval import polarity_accuracy, kendall_tau
 from lookup import lookup
 
@@ -141,17 +142,7 @@ def handle_shift(strategy, seed_path, pred_in_path, pred_out_path):
 
 def handle_impact(edges_path, impact_path, alpha, axis):
     graph = load_graph(edges_path, axis)
-
-    n = graph.shape[0]
-    certs = [0.0] * n
-    impacts = [0.0] * n
-    for idx in xrange(n):
-        certs[idx] = 1.0
-        _, certs_out = random_walk(graph, certs, certs, alpha)
-        certs[idx] = 0.0
-        impacts[idx] = sum(certs_out)
-        print idx, impacts[idx]
-
+    impacts = calc_impacts(graph, alpha)
     _save(impact_path, impacts)
 
 

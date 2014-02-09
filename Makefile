@@ -30,7 +30,7 @@ EDGES_PATH          = $(GRAPH_DATA_PATH)/edges.txt
 RELS_PATH           = $(GRAPH_DATA_PATH)/rels.txt
 
 IR_PRED_PATH_TMPL   = $(IR_DATA_PATH)/r[i].txt
-IR_PRED_PATHS       = $(subst [i],[1-$(IR_ITERS)],$(IR_PRED_PATH_TMPL))
+IR_PRED_PATHS       = $(subst [i],{1..$(IR_ITERS)},$(IR_PRED_PATH_TMPL))
 
 RW_PRED_PATH        = $(RW_DATA_PATH)/r1.txt
 
